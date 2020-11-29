@@ -19,7 +19,7 @@ import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotion;
 import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotions;
 import com.markettrender.newsemotions.models.pojo.stocknews.Ticker;
 
-public class StockNewsDataCollectorTest {
+public class StockNewsDataCollectorServiceTest {
 	
 	private String getDailySentimentsResponse = MockStockNewsApiResponses.GET_DAILY_SENTIMENTS_RESPONSE;
 	private String getAllTickersResponse = MockStockNewsApiResponses.GET_ALL_TICKERS_RESPONSE;
