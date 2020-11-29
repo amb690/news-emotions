@@ -5,4 +5,4 @@ COPY ${JAR_FILE} news-emotions.jar
 ENTRYPOINT ["java",\
 "-Djava.security.egd=file:/dev/./urandom",\
 "-jar",\
-"/api-manager.jar"]
+"/news-emotions.jar"]
