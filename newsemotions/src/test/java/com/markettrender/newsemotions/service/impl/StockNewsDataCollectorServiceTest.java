@@ -19,13 +19,13 @@ import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotion;
 import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotions;
 import com.markettrender.newsemotions.models.pojo.stocknews.Ticker;
 
-public class StockNewsDataCollectorServiceTest {
+class StockNewsDataCollectorServiceTest {
 	
 	private String getDailySentimentsResponse = MockStockNewsApiResponses.GET_DAILY_SENTIMENTS_RESPONSE;
 	private String getAllTickersResponse = MockStockNewsApiResponses.GET_ALL_TICKERS_RESPONSE;
 
 	@Test
-	public void deserializeGetDailySentimentsResponse() throws IOException {
+	void deserializeGetDailySentimentsResponse() throws IOException {
 		
 		DailyEmotions rates = new DailyEmotions();
 	    JsonNode node = new ObjectMapper().readTree(getDailySentimentsResponse);
@@ -74,7 +74,7 @@ public class StockNewsDataCollectorServiceTest {
 	}
 	
 	@Test
-	public void deserializeGetAllTickersResponse() throws IOException {
+	void deserializeGetAllTickersResponse() throws IOException {
 		
 	    JsonNode node = new ObjectMapper().readTree(getAllTickersResponse);
 	    JsonNode dataNode = node.get("data");
