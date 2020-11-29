@@ -21,7 +21,8 @@
 		<docker.image.prefix>albertombln</docker.image.prefix>
 		<docker.repository>news-emotions</docker.repository>
 		<sonar.exclusions>
-			src/main/java/com/markettrender/newsemotions/model/repository/**
+			src/main/java/com/markettrender/newsemotions/model/repository/**,
+			src/main/java/com/markettrender/newsemotions/service/impl/StockNewsDataCollectorServiceImpl.java
 		</sonar.exclusions>
 		<sonar.test.exclusions>
         	src/test/**/*
