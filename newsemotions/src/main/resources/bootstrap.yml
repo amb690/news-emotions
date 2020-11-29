@@ -7,7 +7,7 @@ spring:
     config:
       uri: http://192.168.68.131:8080
   profiles:
-    active: local
+    active: default
 management:
   health:
     refresh:
