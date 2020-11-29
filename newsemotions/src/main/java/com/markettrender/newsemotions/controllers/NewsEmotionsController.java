@@ -35,6 +35,15 @@ public class NewsEmotionsController {
 		
 	}
 	
+	@GetMapping("/{ticker}/{date}")
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<Emotion> getEmotionByTickerAndDate(@PathVariable @NotBlank String ticker,
+			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") @NotNull Date date){
+				
+		Emotion emotion = emotionService.findByAssetAndDate(ticker, date);
+		return new ResponseEntity<>(emotion, HttpStatus.OK);
+	}
+	
 	@GetMapping("/{ticker}/{from}/{to}")
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<List<Emotion>> getEmotionsBetweenTwoDates(@PathVariable @NotBlank String ticker,

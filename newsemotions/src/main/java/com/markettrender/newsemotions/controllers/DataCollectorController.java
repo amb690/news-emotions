@@ -22,7 +22,7 @@ import com.markettrender.newsemotions.models.responses.ImportAllTickersResponse;
 import com.markettrender.newsemotions.service.StockNewsDataCollectorService;
 
 @RestController
-@RequestMapping("/import")
+@RequestMapping("/newsemotions/import")
 public class DataCollectorController {
 	
 	@Autowired
