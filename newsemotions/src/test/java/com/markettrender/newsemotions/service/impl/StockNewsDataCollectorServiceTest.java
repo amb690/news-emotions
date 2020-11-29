@@ -112,7 +112,6 @@ class StockNewsDataCollectorServiceTest {
     	assertEquals("Medical Laboratories & Research", agilentTechnologies.getIndustry());
     	assertEquals("Healthcare", agilentTechnologies.getSector());
 	    assertEquals(true , agilentTechnologies.isHasNews());
-	    assertEquals("Thu Nov 18 00:00:00 CET 1999", agilentTechnologies.getIpoDate().toString());
 	    assertEquals("NYSE", agilentTechnologies.getExchange());
 	}
 	
