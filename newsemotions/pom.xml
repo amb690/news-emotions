@@ -17,7 +17,29 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<spring-cloud.version>Hoxton.SR8</spring-cloud.version>
+		<git.connection>git@github.com:amb690/news-emotions.git</git.connection>
+		<docker.image.prefix>albertombln</docker.image.prefix>
+		<docker.repository>news-emotions</docker.repository>
+		<sonar.exclusions>
+			src/main/java/com/markettrender/newsemotions/model/repository/**
+		</sonar.exclusions>
+		<sonar.test.exclusions>
+        	src/test/**/*
+    	</sonar.test.exclusions>
 	</properties>
+	
+	<distributionManagement>
+		<repository>
+			<id>central</id>
+			<name>a0dnuyjy7fkbp-artifactory-primary-0-releases</name>
+			<url>https://markettrender.jfrog.io/artifactory/market-trender</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>a0dnuyjy7fkbp-artifactory-primary-0-snapshots</name>
+			<url>https://markettrender.jfrog.io/artifactory/market-trender</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<dependencies>
 		<dependency>
@@ -85,6 +107,59 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<preparationGoals>clean install</preparationGoals>
+					<tagBase>https://github.com/amb690/news-emotions/tags</tagBase>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>dockerfile-maven-plugin</artifactId>
+				<version>1.4.13</version>
+				<configuration>
+					<googleContainerRegistryEnabled>false</googleContainerRegistryEnabled>
+					<repository>
+						${docker.image.prefix}/${docker.repository}
+					</repository>
+					<buildArgs>
+						<JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+					</buildArgs>
+      				<serverId>docker-hub</serverId>
+      				<registryUrl>https://index.docker.io/</registryUrl>
+    				<tag>latest</tag>
+				</configuration>
+				<executions>
+					<execution>
+						<id>default</id>
+						<phase>install</phase>
+						<goals>
+							<goal>build</goal>
+							<goal>push</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		    <plugin>
+		        <groupId>org.jacoco</groupId>
+		        <artifactId>jacoco-maven-plugin</artifactId>
+		        <version>0.8.2</version>
+		        <executions>
+		            <execution>
+		                <goals>
+		                    <goal>prepare-agent</goal>
+		                </goals>
+		            </execution>
+		            <execution>
+		                <id>report</id>
+		                <phase>test</phase>
+		                <goals>
+		                    <goal>report</goal>
+		                </goals>
+		            </execution>
+		        </executions>
+		    </plugin>
 		</plugins>
 	</build>
 
