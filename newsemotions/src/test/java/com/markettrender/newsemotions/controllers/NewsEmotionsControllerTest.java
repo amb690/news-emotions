@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataAccessException;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.markettrender.newsemotions.models.entity.Emotion;
@@ -51,6 +52,17 @@ class NewsEmotionsControllerTest {
 	}
 	
 	@Test
+	void getEmotionsByTickerThrowsDatabaseExceptionTest() throws Exception {
+		
+		Mockito.when(emotionService.findByAsset(Mockito.anyString())).thenThrow(new DataAccessException("") {
+			private static final long serialVersionUID = 1L;
+		});
+		
+		this.mockMvc.perform(get("/newsemotions/{ticker}", "GOLD", new Date()))
+				.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
 	void getEmotionsByTickerAndDateTest() throws Exception {
 		
 		Mockito.when(emotionService.findByAssetAndDate(Mockito.anyString(), Mockito.any(Date.class))).thenReturn(new Emotion());
@@ -60,6 +72,18 @@ class NewsEmotionsControllerTest {
 	}
 	
 	@Test
+	void getEmotionsByTickerAndDateThrowsDatabaseExceptionTest() throws Exception {
+		
+		Mockito.when(emotionService.findByAssetAndDate(Mockito.anyString(), Mockito.any(Date.class))).thenThrow(new DataAccessException("") {
+			private static final long serialVersionUID = 1L;
+		});
+		
+		this.mockMvc.perform(get("/newsemotions/{ticker}/{date}", "GOLD", "2020-10-25"))
+			.andExpect(status().isInternalServerError());
+	}
+	
+	
+	@Test
 	void getEmotionsBetweenTwoDatesTest() throws Exception {
 		
 		Mockito.when(emotionService.findByAssetBetweenTwoDates(Mockito.anyString(), Mockito.any(Date.class), Mockito.any(Date.class))).thenReturn(emotionList);
@@ -67,6 +91,17 @@ class NewsEmotionsControllerTest {
 		this.mockMvc.perform(get("/newsemotions/{ticker}/{from}/{to}", "GOLD", "2020-10-24", "2020-10-25"))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.size()", is(emotionList.size())));
+	}
+	
+	@Test
+	void getEmotionsBetweenTwoDatesThrowsDatabaseExceptionTest() throws Exception {
+		
+		Mockito.when(emotionService.findByAssetBetweenTwoDates(Mockito.anyString(), Mockito.any(Date.class), Mockito.any(Date.class))).thenThrow(new DataAccessException("") {
+			private static final long serialVersionUID = 1L;
+		});
+		
+		this.mockMvc.perform(get("/newsemotions/{ticker}/{from}/{to}", "GOLD", "2020-10-24", "2020-10-25"))
+			.andExpect(status().isInternalServerError());
 	}
 
 }
