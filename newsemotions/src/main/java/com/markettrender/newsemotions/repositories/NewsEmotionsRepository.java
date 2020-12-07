@@ -12,12 +12,12 @@ import com.markettrender.newsemotions.models.entity.NewsEmotion;
 @Repository
 public interface NewsEmotionsRepository extends JpaRepository<NewsEmotion, Long> {
 
-	@Query("SELECT e FROM Emotion e LEFT JOIN FETCH e.asset a WHERE a.ticker LIKE ?1 AND e.publishedAt BETWEEN ?2 AND ?3")
+	@Query("SELECT e FROM NewsEmotion e LEFT JOIN FETCH e.asset a WHERE a.ticker LIKE ?1 AND e.publishedAt BETWEEN ?2 AND ?3")
 	List<NewsEmotion> findbyAssetBetweenTwoDates(String asset, Date from, Date to);
 	
-	@Query("SELECT e FROM Emotion e LEFT JOIN FETCH e.asset a WHERE a.ticker LIKE ?1")
+	@Query("SELECT e FROM NewsEmotion e LEFT JOIN FETCH e.asset a WHERE a.ticker LIKE ?1")
 	List<NewsEmotion> findbyAsset(String asset);
 
-	@Query("SELECT e FROM Emotion e LEFT JOIN FETCH e.asset a WHERE a.ticker LIKE ?1 AND e.publishedAt = ?2")
+	@Query("SELECT e FROM NewsEmotion e LEFT JOIN FETCH e.asset a WHERE a.ticker LIKE ?1 AND e.publishedAt = ?2")
 	NewsEmotion findbyAssetAndDate(String asset, Date date);
 }

@@ -22,10 +22,10 @@ import com.markettrender.newsemotions.service.EmotionService;
 class NewsEmotionsServiceTest {
 
 	@Autowired
-	private EmotionService emotionService;
+	private EmotionService newsEmotionsService;
 
 	@MockBean
-	private NewsEmotionsRepository emotionRepo;
+	private NewsEmotionsRepository newsEmotionsRepo;
 	
 	@Test
 	void findAllNewsEmotionsTest() {
@@ -36,9 +36,9 @@ class NewsEmotionsServiceTest {
 		List<NewsEmotion> emotions = new ArrayList<NewsEmotion>();
 		emotions.add(mockedEmotion);
 
-		when(emotionRepo.findAll()).thenReturn(emotions);
+		when(newsEmotionsRepo.findAll()).thenReturn(emotions);
 
-		List<NewsEmotion> savedEmotions = emotionService.findAll();
+		List<NewsEmotion> savedEmotions = newsEmotionsService.findAll();
 
 		assertThat(savedEmotions.get(0).getApiName()).isEqualTo("twitter");
 	}
@@ -73,10 +73,10 @@ class NewsEmotionsServiceTest {
 		List<NewsEmotion> emotions = new ArrayList<NewsEmotion>();
 		emotions.add(mockedEmotion);
 
-		when(emotionRepo.findbyAssetBetweenTwoDates(Mockito.anyString(), Mockito.any(Date.class), Mockito.any(Date.class)))
+		when(newsEmotionsRepo.findbyAssetBetweenTwoDates(Mockito.anyString(), Mockito.any(Date.class), Mockito.any(Date.class)))
 			.thenReturn(emotions);
 
-		List<NewsEmotion> savedEmotions = emotionService.findByAssetBetweenTwoDates("APPL", new Date(244444), new Date(244444));
+		List<NewsEmotion> savedEmotions = newsEmotionsService.findByAssetBetweenTwoDates("APPL", new Date(244444), new Date(244444));
 
 		NewsEmotion appleEmotion = savedEmotions.get(0);
 		assertThat(appleEmotion.getApiName()).isEqualTo("twitter");
@@ -101,9 +101,9 @@ class NewsEmotionsServiceTest {
 		List<NewsEmotion> emotions = new ArrayList<NewsEmotion>();
 		emotions.add(mockedEmotion);
 
-		when(emotionRepo.findbyAssetAndDate(Mockito.anyString(), Mockito.any(Date.class))).thenReturn(mockedEmotion);
+		when(newsEmotionsRepo.findbyAssetAndDate(Mockito.anyString(), Mockito.any(Date.class))).thenReturn(mockedEmotion);
 
-		NewsEmotion savedEmotion = emotionService.findByAssetAndDate("APPL", new Date(56L));
+		NewsEmotion savedEmotion = newsEmotionsService.findByAssetAndDate("APPL", new Date(56L));
 
 		assertThat(savedEmotion.getApiName()).isEqualTo("twitter");
 	}
@@ -114,9 +114,9 @@ class NewsEmotionsServiceTest {
 		NewsEmotion mockedEmotion = new NewsEmotion();
 		mockedEmotion.setApiName("twitter");
 
-		when(emotionRepo.save(Mockito.any(NewsEmotion.class))).thenReturn(mockedEmotion);
+		when(newsEmotionsRepo.save(Mockito.any(NewsEmotion.class))).thenReturn(mockedEmotion);
 
-		emotionService.save(mockedEmotion);
+		newsEmotionsService.save(mockedEmotion);
 
 		assertThat(mockedEmotion.getApiName()).isEqualTo("twitter");
 	}
@@ -130,9 +130,9 @@ class NewsEmotionsServiceTest {
 		List<NewsEmotion> emotions = new ArrayList<NewsEmotion>();
 		emotions.add(mockedEmotion);
 
-		when(emotionRepo.findbyAsset(Mockito.anyString())).thenReturn(emotions);
+		when(newsEmotionsRepo.findbyAsset(Mockito.anyString())).thenReturn(emotions);
 
-		List<NewsEmotion> savedEmotionList = emotionService.findByAsset("APPL");
+		List<NewsEmotion> savedEmotionList = newsEmotionsService.findByAsset("APPL");
 
 		assertThat(savedEmotionList.get(0).getApiName()).isEqualTo("twitter");
 	}
