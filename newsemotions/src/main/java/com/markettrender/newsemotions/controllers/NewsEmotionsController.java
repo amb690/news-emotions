@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.markettrender.newsemotions.models.entity.Emotion;
+import com.markettrender.newsemotions.models.entity.NewsEmotion;
 import com.markettrender.newsemotions.service.EmotionService;
 
 @RestController
@@ -32,7 +32,7 @@ public class NewsEmotionsController {
 	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<?> getEmotionsByTicker(@PathVariable @NotBlank String ticker){
 		
-		List<Emotion> emotions = new ArrayList<>();
+		List<NewsEmotion> emotions = new ArrayList<>();
 		try {
 			emotions = emotionService.findByAsset(ticker);	
 		} catch (DataAccessException de) {
@@ -47,7 +47,7 @@ public class NewsEmotionsController {
 	public ResponseEntity<?> getEmotionByTickerAndDate(@PathVariable @NotBlank String ticker,
 			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") @NotNull Date date){
 				
-		Emotion emotion = new Emotion();
+		NewsEmotion emotion = new NewsEmotion();
 		try {
 			emotion = emotionService.findByAssetAndDate(ticker, date);	
 		} catch(DataAccessException de) {
@@ -62,7 +62,7 @@ public class NewsEmotionsController {
 			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") @NotNull Date from,
 			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") @NotNull Date to){
 		
-		List<Emotion> emotions = new ArrayList<>();
+		List<NewsEmotion> emotions = new ArrayList<>();
 		try {
 			 emotions = emotionService.findByAssetBetweenTwoDates(ticker, from, to);	
 		} catch (DataAccessException de) {

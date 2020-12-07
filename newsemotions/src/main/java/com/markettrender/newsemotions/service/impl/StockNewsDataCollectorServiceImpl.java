@@ -29,14 +29,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markettrender.newsemotions.exceptions.StockNewsApiException;
 import com.markettrender.newsemotions.models.entity.Asset;
-import com.markettrender.newsemotions.models.entity.Emotion;
+import com.markettrender.newsemotions.models.entity.NewsEmotion;
 import com.markettrender.newsemotions.models.pojo.Api;
 import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotion;
 import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotions;
 import com.markettrender.newsemotions.models.pojo.stocknews.Ticker;
 import com.markettrender.newsemotions.models.responses.ImportAllTickersResponse;
 import com.markettrender.newsemotions.repositories.AssetRepository;
-import com.markettrender.newsemotions.repositories.EmotionRepository;
+import com.markettrender.newsemotions.repositories.NewsEmotionsRepository;
 import com.markettrender.newsemotions.service.StockNewsDataCollectorService;
 
 @Service
@@ -57,7 +57,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 	private AssetRepository assetRepo;
 	
 	@Autowired
-	private EmotionRepository emotionRepo;
+	private NewsEmotionsRepository emotionRepo;
 	
 	@Value("${api-manager-url}")
 	private String apiManagerUrl;
@@ -398,12 +398,12 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		
 		for (DailyEmotion dailyEmotion: dailyEmotions) {
 			
-			Emotion importedEmotion = emotionRepo.findbyAssetAndDate(ticker, dailyEmotion.getPublishedAt());
+			NewsEmotion importedEmotion = emotionRepo.findbyAssetAndDate(ticker, dailyEmotion.getPublishedAt());
 			
 			if (importedEmotion != null)
 				continue;
 			
-			Emotion emotion = new Emotion();
+			NewsEmotion emotion = new NewsEmotion();
 			emotion.setAsset(asset);
 			emotion.setPositive(dailyEmotion.getPositive());
 			emotion.setNeutral(dailyEmotion.getNeutral());

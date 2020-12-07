@@ -7,46 +7,46 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.markettrender.newsemotions.models.entity.Emotion;
-import com.markettrender.newsemotions.repositories.EmotionRepository;
+import com.markettrender.newsemotions.models.entity.NewsEmotion;
+import com.markettrender.newsemotions.repositories.NewsEmotionsRepository;
 import com.markettrender.newsemotions.service.EmotionService;
 
 @Service
-public class EmotionServiceImpl implements EmotionService {
+public class NewsEmotionsServiceImpl implements EmotionService {
 
 	@Autowired
-	private EmotionRepository sentimentRepo;
+	private NewsEmotionsRepository sentimentRepo;
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Emotion> findAll() {
+	public List<NewsEmotion> findAll() {
 
 		return sentimentRepo.findAll();
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Emotion> findByAssetBetweenTwoDates(String asset, Date from, Date to) {
+	public List<NewsEmotion> findByAssetBetweenTwoDates(String asset, Date from, Date to) {
 
 		return sentimentRepo.findbyAssetBetweenTwoDates(asset, from, to);
 	}
 
 	@Override
 	@Transactional(readOnly = true)
-	public Emotion findByAssetAndDate(String asset, Date monthDay) {
+	public NewsEmotion findByAssetAndDate(String asset, Date monthDay) {
 
 		return sentimentRepo.findbyAssetAndDate(asset, monthDay);
 	}
 
 	@Override
 	@Transactional
-	public void save(Emotion sentiment) {
+	public void save(NewsEmotion sentiment) {
 
 		sentimentRepo.save(sentiment);
 	}
 
 	@Override
-	public List<Emotion> findByAsset(String ticker) {
+	public List<NewsEmotion> findByAsset(String ticker) {
 		
 		return sentimentRepo.findbyAsset(ticker);
 	}

@@ -62,7 +62,7 @@ public class Asset implements Serializable {
 
 	@OneToMany(mappedBy = "asset", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JsonManagedReference
-	private List<Emotion> emotions;
+	private List<NewsEmotion> emotions;
 
 	@PrePersist
 	public void prePersist() {
@@ -81,15 +81,15 @@ public class Asset implements Serializable {
 		this.id = id;
 	}
 
-	public List<Emotion> getEmotions() {
+	public List<NewsEmotion> getEmotions() {
 		return emotions;
 	}
 
-	public void setEmotions(List<Emotion> emotions) {
+	public void setEmotions(List<NewsEmotion> emotions) {
 		this.emotions = emotions;
 	}
 
-	public void addFactura(Emotion emotion) {
+	public void addFactura(NewsEmotion emotion) {
 		this.emotions.add(emotion);
 	}
 

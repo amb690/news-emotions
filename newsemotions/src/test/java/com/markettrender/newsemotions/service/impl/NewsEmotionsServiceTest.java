@@ -14,31 +14,31 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.markettrender.newsemotions.models.entity.Asset;
-import com.markettrender.newsemotions.models.entity.Emotion;
-import com.markettrender.newsemotions.repositories.EmotionRepository;
+import com.markettrender.newsemotions.models.entity.NewsEmotion;
+import com.markettrender.newsemotions.repositories.NewsEmotionsRepository;
 import com.markettrender.newsemotions.service.EmotionService;
 
 @SpringBootTest
-class EmotionServiceTest {
+class NewsEmotionsServiceTest {
 
 	@Autowired
 	private EmotionService emotionService;
 
 	@MockBean
-	private EmotionRepository emotionRepo;
+	private NewsEmotionsRepository emotionRepo;
 	
 	@Test
 	void findAllNewsEmotionsTest() {
 
-		Emotion mockedEmotion = new Emotion();
+		NewsEmotion mockedEmotion = new NewsEmotion();
 		mockedEmotion.setApiName("twitter");
 
-		List<Emotion> emotions = new ArrayList<Emotion>();
+		List<NewsEmotion> emotions = new ArrayList<NewsEmotion>();
 		emotions.add(mockedEmotion);
 
 		when(emotionRepo.findAll()).thenReturn(emotions);
 
-		List<Emotion> savedEmotions = emotionService.findAll();
+		List<NewsEmotion> savedEmotions = emotionService.findAll();
 
 		assertThat(savedEmotions.get(0).getApiName()).isEqualTo("twitter");
 	}
@@ -46,7 +46,7 @@ class EmotionServiceTest {
 	@Test
 	void findNewsEmotionsByAssetBetweenTwoDatesTest() {
 
-		Emotion mockedEmotion = new Emotion();
+		NewsEmotion mockedEmotion = new NewsEmotion();
 		Asset apple = new Asset();
 		apple.setTicker("APPL");
 		apple.setCountry("EEUU");
@@ -70,15 +70,15 @@ class EmotionServiceTest {
 		mockedEmotion.setPublishedAt(new Date(566666));
 		mockedEmotion.prePersist();
 		
-		List<Emotion> emotions = new ArrayList<Emotion>();
+		List<NewsEmotion> emotions = new ArrayList<NewsEmotion>();
 		emotions.add(mockedEmotion);
 
 		when(emotionRepo.findbyAssetBetweenTwoDates(Mockito.anyString(), Mockito.any(Date.class), Mockito.any(Date.class)))
 			.thenReturn(emotions);
 
-		List<Emotion> savedEmotions = emotionService.findByAssetBetweenTwoDates("APPL", new Date(244444), new Date(244444));
+		List<NewsEmotion> savedEmotions = emotionService.findByAssetBetweenTwoDates("APPL", new Date(244444), new Date(244444));
 
-		Emotion appleEmotion = savedEmotions.get(0);
+		NewsEmotion appleEmotion = savedEmotions.get(0);
 		assertThat(appleEmotion.getApiName()).isEqualTo("twitter");
 		assertThat(appleEmotion.getAsset()).isNotNull();
 		assertThat(appleEmotion.getEmotionLabel()).isEqualTo("POSITIVE");
@@ -95,15 +95,15 @@ class EmotionServiceTest {
 	@Test
 	void findByAssetAndDateTest() {
 
-		Emotion mockedEmotion = new Emotion();
+		NewsEmotion mockedEmotion = new NewsEmotion();
 		mockedEmotion.setApiName("twitter");
 
-		List<Emotion> emotions = new ArrayList<Emotion>();
+		List<NewsEmotion> emotions = new ArrayList<NewsEmotion>();
 		emotions.add(mockedEmotion);
 
 		when(emotionRepo.findbyAssetAndDate(Mockito.anyString(), Mockito.any(Date.class))).thenReturn(mockedEmotion);
 
-		Emotion savedEmotion = emotionService.findByAssetAndDate("APPL", new Date(56L));
+		NewsEmotion savedEmotion = emotionService.findByAssetAndDate("APPL", new Date(56L));
 
 		assertThat(savedEmotion.getApiName()).isEqualTo("twitter");
 	}
@@ -111,10 +111,10 @@ class EmotionServiceTest {
 	@Test
 	void saveNewsEmotionTest() {
 
-		Emotion mockedEmotion = new Emotion();
+		NewsEmotion mockedEmotion = new NewsEmotion();
 		mockedEmotion.setApiName("twitter");
 
-		when(emotionRepo.save(Mockito.any(Emotion.class))).thenReturn(mockedEmotion);
+		when(emotionRepo.save(Mockito.any(NewsEmotion.class))).thenReturn(mockedEmotion);
 
 		emotionService.save(mockedEmotion);
 
@@ -124,15 +124,15 @@ class EmotionServiceTest {
 	@Test
 	void findByAssetTest() {
 
-		Emotion mockedEmotion = new Emotion();
+		NewsEmotion mockedEmotion = new NewsEmotion();
 		mockedEmotion.setApiName("twitter");
 
-		List<Emotion> emotions = new ArrayList<Emotion>();
+		List<NewsEmotion> emotions = new ArrayList<NewsEmotion>();
 		emotions.add(mockedEmotion);
 
 		when(emotionRepo.findbyAsset(Mockito.anyString())).thenReturn(emotions);
 
-		List<Emotion> savedEmotionList = emotionService.findByAsset("APPL");
+		List<NewsEmotion> savedEmotionList = emotionService.findByAsset("APPL");
 
 		assertThat(savedEmotionList.get(0).getApiName()).isEqualTo("twitter");
 	}

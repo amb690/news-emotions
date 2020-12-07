@@ -18,7 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.markettrender.newsemotions.models.entity.Emotion;
+import com.markettrender.newsemotions.models.entity.NewsEmotion;
 import com.markettrender.newsemotions.service.EmotionService;
 
 @WebMvcTest(controllers = NewsEmotionsController.class)
@@ -30,13 +30,13 @@ class NewsEmotionsControllerTest {
 	@MockBean
 	private EmotionService emotionService;
 	
-	private List<Emotion> emotionList;
+	private List<NewsEmotion> emotionList;
 
 	@BeforeEach
 	void setUp() {
 		this.emotionList = new ArrayList<>();
 
-		Emotion emotion = new Emotion();
+		NewsEmotion emotion = new NewsEmotion();
 		emotion.setEmotionLabel("SCORE");
 		this.emotionList.add(emotion);
 	}
@@ -65,7 +65,7 @@ class NewsEmotionsControllerTest {
 	@Test
 	void getEmotionsByTickerAndDateTest() throws Exception {
 		
-		Mockito.when(emotionService.findByAssetAndDate(Mockito.anyString(), Mockito.any(Date.class))).thenReturn(new Emotion());
+		Mockito.when(emotionService.findByAssetAndDate(Mockito.anyString(), Mockito.any(Date.class))).thenReturn(new NewsEmotion());
 		
 		this.mockMvc.perform(get("/newsemotions/{ticker}/{date}", "GOLD", "2020-10-25"))
 			.andExpect(status().isOk());

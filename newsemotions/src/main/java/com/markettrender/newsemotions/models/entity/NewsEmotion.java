@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "asset_id", "published_at", "apiName" }) })
-public class Emotion implements Serializable {
+public class NewsEmotion implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

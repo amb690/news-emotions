@@ -3,18 +3,18 @@ package com.markettrender.newsemotions.service;
 import java.util.Date;
 import java.util.List;
 
-import com.markettrender.newsemotions.models.entity.Emotion;
+import com.markettrender.newsemotions.models.entity.NewsEmotion;
 
 public interface EmotionService {
 
-	public List<Emotion> findAll();
+	public List<NewsEmotion> findAll();
 
-	public List<Emotion> findByAssetBetweenTwoDates(String asset, Date from, Date to);
+	public List<NewsEmotion> findByAssetBetweenTwoDates(String asset, Date from, Date to);
 
-	public void save(Emotion emotion);
+	public void save(NewsEmotion emotion);
 
-	public Emotion findByAssetAndDate(String asset, Date monthDay);
+	public NewsEmotion findByAssetAndDate(String asset, Date monthDay);
 
-	public List<Emotion> findByAsset(String ticker);
+	public List<NewsEmotion> findByAsset(String ticker);
 
 }
