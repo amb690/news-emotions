@@ -41,6 +41,7 @@ class AssetServiceTest {
 		apple.setName("Apple INC");
 		apple.setSector("Technology");
 		apple.setEmotions(new ArrayList<NewsEmotion>());
+		apple.addNewsEmotion(new NewsEmotion());
 		apple.prePersist();
 
 		when(assetRepo.save(Mockito.any(Asset.class))).thenReturn(apple);
@@ -59,6 +60,7 @@ class AssetServiceTest {
 		assertThat(apple.getSector()).isEqualTo("Technology");
 		assertThat(apple.getEmotions()).isNotNull();
 		assertThat(apple.getCreatedAt()).isNotNull();
+		assertThat(apple.toString()).isNotNull();
 		
 	}
 	

@@ -89,7 +89,7 @@ public class Asset implements Serializable {
 		this.emotions = emotions;
 	}
 
-	public void addFactura(NewsEmotion emotion) {
+	public void addNewsEmotion(NewsEmotion emotion) {
 		this.emotions.add(emotion);
 	}
 
