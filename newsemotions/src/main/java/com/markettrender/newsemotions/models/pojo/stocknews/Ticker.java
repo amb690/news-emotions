@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Ticker {
 	
-	private String ticker;
+	private String ticker1;
 	
 	private String name;
 	
@@ -23,7 +23,7 @@ public class Ticker {
 	public Ticker(String ticker, String name, String country, String industry, String sector, boolean hasNews,
 			Date ipoDate, String exchange) {
 		
-		this.ticker = ticker;
+		this.ticker1 = ticker;
 		this.name = name;
 		this.country = country;
 		this.industry = industry;
@@ -33,12 +33,14 @@ public class Ticker {
 		this.exchange = exchange;
 	}
 
+	public Ticker() {}
+
 	public String getTicker() {
-		return ticker;
+		return ticker1;
 	}
 
 	public void setTicker(String ticker) {
-		this.ticker = ticker;
+		this.ticker1 = ticker;
 	}
 
 	public String getName() {
@@ -99,7 +101,7 @@ public class Ticker {
 
 	@Override
 	public String toString() {
-		return "Ticker [ticker=" + ticker + ", name=" + name + ", country=" + country + ", industry=" + industry
+		return "Ticker [ticker=" + ticker1 + ", name=" + name + ", country=" + country + ", industry=" + industry
 				+ ", sector=" + sector + ", hasNews=" + hasNews + ", ipoDate=" + ipoDate + ", exchange=" + exchange
 				+ "]";
 	}

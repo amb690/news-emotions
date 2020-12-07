@@ -1,6 +1,7 @@
 package com.markettrender.newsemotions.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -15,9 +16,11 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.markettrender.newsemotions.models.pojo.Api;
 import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotion;
 import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotions;
 import com.markettrender.newsemotions.models.pojo.stocknews.Ticker;
+import com.markettrender.newsemotions.models.responses.ImportAllTickersResponse;
 
 class StockNewsDataCollectorServiceTest {
 	
@@ -113,6 +116,102 @@ class StockNewsDataCollectorServiceTest {
     	assertEquals("Healthcare", agilentTechnologies.getSector());
 	    assertEquals(true , agilentTechnologies.isHasNews());
 	    assertEquals("NYSE", agilentTechnologies.getExchange());
+	}
+	
+	// POJOS
+	
+	@Test
+	void dailyEmotionsPojoTest() throws IOException {
+		
+		DailyEmotion dailyEmotion = new DailyEmotion();
+		List<DailyEmotion> dailyEmotionsList = new ArrayList<>();
+		dailyEmotionsList.add(dailyEmotion);
+		
+		DailyEmotions dailyEmotions = new DailyEmotions(dailyEmotionsList);
+		dailyEmotions.setEmotionRates(new ArrayList<>());
+		dailyEmotions.setPages(0);
+		
+		assertNotNull(dailyEmotions.getEmotionRates());
+	    assertEquals(0, dailyEmotions.getPages());
+	}
+	
+	@Test
+	void dailyEmotionPojoTest() throws IOException {
+		
+		DailyEmotion dailyEmotion = new DailyEmotion();
+		dailyEmotion.setNegative(2);
+		dailyEmotion.setNeutral(3);
+		dailyEmotion.setPositive(54);
+		dailyEmotion.setPublishedAt(new Date());
+		dailyEmotion.setScoreLabel("POSITIVE");
+		dailyEmotion.setTotalScore(4.5);
+		
+    	assertEquals(2, dailyEmotion.getNegative());
+    	assertEquals(3, dailyEmotion.getNeutral());
+    	assertEquals(54, dailyEmotion.getPositive());
+    	assertNotNull(dailyEmotion.getPublishedAt());
+    	assertEquals("POSITIVE", dailyEmotion.getScoreLabel());
+    	assertEquals(4.5, dailyEmotion.getTotalScore());
+    	
+	}
+	
+	@Test
+	void tickerPojoTest() throws IOException {
+		
+		Ticker ticker = new Ticker();
+		ticker.setCountry("EEUU");
+		ticker.setExchange("NASDAQ100");
+		ticker.setHasNews(true);
+		ticker.setIndustry("Technologies");
+		ticker.setIpoDate(new Date());
+		ticker.setName("APPLE");
+		ticker.setSector("Technologies");
+		ticker.setTicker("AAPL");
+		
+    	assertEquals("EEUU", ticker.getCountry());
+    	assertEquals("NASDAQ100", ticker.getExchange());
+    	assertEquals(true, ticker.isHasNews());
+    	assertEquals("Technologies", ticker.getIndustry());
+    	assertNotNull(ticker.getIpoDate());
+    	assertEquals("APPLE", ticker.getName());
+    	assertEquals("Technologies", ticker.getSector());
+    	assertEquals("AAPL", ticker.getTicker());
+    	assertNotNull(ticker.toString());
+    	
+	}
+	
+	@Test
+	void apiPojoTest() throws IOException {
+		
+		Api api = new Api();
+		api.setCreatedAt(new Date());
+		api.setId(1L);
+		api.setLastPetition(new Date());
+		api.setMaxPetitions(50000);
+		api.setName("stocknewsapi");
+		api.setNumberOfPetitions(10L);
+		
+    	assertNotNull(api.getCreatedAt());
+    	assertEquals(1L, api.getId());
+    	assertNotNull(api.getLastPetition());
+    	assertEquals(50000, api.getMaxPetitions());
+    	assertEquals("stocknewsapi", api.getName());
+    	assertEquals(10L, api.getNumberOfPetitions());
+    	assertNotNull(api.toString());
+	}
+	
+	@Test
+	void importAllTickersResponsesPojoTest() throws IOException {
+		
+		ImportAllTickersResponse allTickersResponse2 = new ImportAllTickersResponse();
+		ImportAllTickersResponse allTickersResponse = new ImportAllTickersResponse(50, 100);
+		allTickersResponse.setCreatedTickers(500);
+		allTickersResponse.setUdpatedTickers(600);
+		
+    	assertNotNull(allTickersResponse.toString());
+    	assertEquals(500, allTickersResponse.getCreatedTickers());
+    	assertEquals(600, allTickersResponse.getUdpatedTickers());
+    	assertNotNull(allTickersResponse2);
 	}
 	
 }
