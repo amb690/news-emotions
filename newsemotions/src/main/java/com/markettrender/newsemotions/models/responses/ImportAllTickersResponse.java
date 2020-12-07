@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class ImportAllTickersResponse implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	private int createdTickers;
 	
 	private int updatedTickers;
