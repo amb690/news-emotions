@@ -21,6 +21,7 @@ import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotion;
 import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotions;
 import com.markettrender.newsemotions.models.pojo.stocknews.Ticker;
 import com.markettrender.newsemotions.models.responses.ImportAllTickersResponse;
+import com.markettrender.newsemotions.models.responses.ImportDailyEmotionsResponse;
 
 class StockNewsDataCollectorServiceTest {
 	
@@ -212,6 +213,23 @@ class StockNewsDataCollectorServiceTest {
     	assertEquals(500, allTickersResponse.getCreatedTickers());
     	assertEquals(600, allTickersResponse.getUdpatedTickers());
     	assertNotNull(allTickersResponse2);
+	}
+	
+	@Test
+	void importdailyEmotionsResponsePojoTest() throws IOException {
+		
+		ImportDailyEmotionsResponse response = new ImportDailyEmotionsResponse();
+		ImportDailyEmotionsResponse response2 = new ImportDailyEmotionsResponse(50, 100, 50, 100);
+		response.setSaved(56);
+		response.setUpdated(100);
+		response.setSuccessfullyProcessed(500);
+		response.setProcessedWithErrors(5);
+		
+    	assertEquals(56, response.getSaved());
+    	assertEquals(100, response.getUpdated());
+    	assertEquals(500, response.getSuccessfullyProcessed());
+    	assertEquals(5, response.getProcessedWithErrors());
+    	assertNotNull(response2);
 	}
 	
 }

@@ -24,35 +24,35 @@ public class ImportDailyEmotionsResponse implements Serializable {
 		this.processedWithErrors = processedWithErrors;
 	}
 
-	public int getNumSaved() {
+	public int getSaved() {
 		return saved;
 	}
 
-	public void setNumSaved(int saved) {
+	public void setSaved(int saved) {
 		this.saved = saved;
 	}
 
-	public int getNumUpdated() {
+	public int getUpdated() {
 		return updated;
 	}
 
-	public void setNumUpdated(int updated) {
+	public void setUpdated(int updated) {
 		this.updated = updated;
 	}
 
-	public int getNumSuccessful() {
+	public int getSuccessfullyProcessed() {
 		return successfullyProcessed;
 	}
 
-	public void setNumSuccessful(int successfullyProcessed) {
+	public void setSuccessfullyProcessed(int successfullyProcessed) {
 		this.successfullyProcessed = successfullyProcessed;
 	}
 
-	public int getNumErrors() {
+	public int getProcessedWithErrors() {
 		return processedWithErrors;
 	}
 
-	public void setNumErrors(int processedWithErrors) {
+	public void setProcessedWithErrors(int processedWithErrors) {
 		this.processedWithErrors = processedWithErrors;
 	}
 	
