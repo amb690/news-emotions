@@ -382,9 +382,8 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		
 		Asset asset = assetRepo.findbyName(ticker);
 		if (asset == null) {
-			asset = new Asset();
-			asset.setTicker(ticker);
-			assetRepo.save(asset);
+			logger.error("Asset not found!");
+			return new ImportDailyEmotionsResponse();
 		}
 		logger.debug("Asset info: " + asset);
 		
