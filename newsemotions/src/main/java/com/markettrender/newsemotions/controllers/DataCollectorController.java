@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.markettrender.newsemotions.models.responses.ImportAllTickersResponse;
+import com.markettrender.newsemotions.models.responses.ImportDailyEmotionsResponse;
 import com.markettrender.newsemotions.service.StockNewsDataCollectorService;
 
 @RestController
@@ -30,7 +31,7 @@ public class DataCollectorController {
 	
 	@PostMapping("/{ticker}/{from}/{to}")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<String> importDailyEmotions(@PathVariable @NotBlank String ticker,
+	public ResponseEntity<?> importDailyEmotions(@PathVariable @NotBlank String ticker,
 			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") @NotNull Date from,
 			@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") @NotNull Date to,
 			@RequestParam(value = "lastYear", required = true) boolean lastYear, 
@@ -40,13 +41,14 @@ public class DataCollectorController {
 			return new ResponseEntity<>("Initial date must be previous or equal to final date",
 					HttpStatus.BAD_REQUEST);
 
+		ImportDailyEmotionsResponse response = new ImportDailyEmotionsResponse();
 		try {
-			stockNewsDataCollectorService.importDailyEmotionsByDate(ticker, from, to, lastYear, lastThirtyDays);
+			response = stockNewsDataCollectorService.importDailyEmotionsByDate(ticker, from, to, lastYear, lastThirtyDays);
 		} catch (ResponseStatusException re) {
 			return new ResponseEntity<>("Bad connection", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		return new ResponseEntity<>("", HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 	

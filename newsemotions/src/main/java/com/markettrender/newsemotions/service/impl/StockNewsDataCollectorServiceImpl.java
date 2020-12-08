@@ -35,6 +35,7 @@ import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotion;
 import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotions;
 import com.markettrender.newsemotions.models.pojo.stocknews.Ticker;
 import com.markettrender.newsemotions.models.responses.ImportAllTickersResponse;
+import com.markettrender.newsemotions.models.responses.ImportDailyEmotionsResponse;
 import com.markettrender.newsemotions.repositories.AssetRepository;
 import com.markettrender.newsemotions.repositories.NewsEmotionsRepository;
 import com.markettrender.newsemotions.service.StockNewsDataCollectorService;
@@ -200,7 +201,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 	}
 
 	@Override
-	public boolean importDailyEmotionsByDate(String ticker, Date from, Date to, boolean lastYear, boolean lastThirtyDays) throws Exception {
+	public ImportDailyEmotionsResponse importDailyEmotionsByDate(String ticker, Date from, Date to, boolean lastYear, boolean lastThirtyDays) throws Exception {
 
 		String methodName = "importDailyEmotions";
 		logger.info("-->" + methodName);
@@ -230,13 +231,13 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		}
 		dailyEmotions.setEmotionRates(dailyEmotionsList);
 		
-		this.saveDailyEmotions(ticker, dailyEmotionsList, apiResponse.getName());
+		ImportDailyEmotionsResponse response = this.saveDailyEmotions(ticker, dailyEmotionsList, apiResponse.getName());
 
 		this.updateApiNumberOfPetitions(apiResponse, pages);
 		
 		logger.info("<--" + methodName);
 		
-		return true;
+		return response;
 	}
 	
 	private Api getApiData() throws StockNewsApiException {
@@ -374,7 +375,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
     	return dailyEmotions;
 	}
 	
-	private void saveDailyEmotions(String ticker, List<DailyEmotion> dailyEmotions, String apiName) {
+	private ImportDailyEmotionsResponse saveDailyEmotions(String ticker, List<DailyEmotion> dailyEmotions, String apiName) {
 		
 		String methodName = "saveDailyEmotions";
 		logger.info("-->" + methodName);
@@ -387,6 +388,10 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		}
 		logger.debug("Asset info: " + asset);
 		
+		int created = 0;
+		int updated = 0;
+		int numSucesful = 0;
+		int numErrors = 0;
 		for (DailyEmotion dailyEmotion: dailyEmotions) {
 			
 			NewsEmotion importedEmotion = emotionRepo.findbyAssetAndDate(ticker, dailyEmotion.getPublishedAt());
@@ -394,21 +399,31 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 				
 				String emotionLabel = calculateNewsEmotionScore(dailyEmotion.getPositive(), dailyEmotion.getNegative());
 				importedEmotion.setEmotionLabel(emotionLabel);
+				updated++;
 			} else {
-			
-				importedEmotion = setNewsEmotionFromDailyEmotion(new NewsEmotion(), dailyEmotion, asset, ticker);
+				
+				importedEmotion = setNewsEmotionFromDailyEmotion(new NewsEmotion(), dailyEmotion, asset, apiName);
+				created++;
 			}
 			
 			try {
 				emotionRepo.save(importedEmotion);
+				numSucesful++;
 			}catch(Exception e) {
 				logger.error("Error trying to save daily emotion");
+				numErrors++;
 			}
 			logger.trace("Emotion " + importedEmotion + " successfully imported");
 			
 		}
 		
+		logger.info("Emotions to create: " + created);
+		logger.info("Emotions to update: " + updated);
+		logger.info("Emotions successfully saved: " + numSucesful);
+		logger.info("Emotions error while saving: " + numErrors);
 		logger.info("<--" + methodName);
+		
+		return new ImportDailyEmotionsResponse(created, updated, numSucesful, numErrors);
 	}
 	
 	private NewsEmotion setNewsEmotionFromDailyEmotion(NewsEmotion emotion, DailyEmotion dailyEmotion, 
