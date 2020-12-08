@@ -93,7 +93,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 				created++;
 			} else {
 				logger.trace("Updating ticker " + ticker.getTicker());
-				asset = setAssetFromTicker(asset, ticker);
+				setAssetFromTicker(asset, ticker);
 				updated++;
 			}
 			
@@ -232,7 +232,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		
 		this.saveDailyEmotions(ticker, dailyEmotionsList, apiResponse.getName());
 
-		this.updateApiPetitions(apiResponse, pages);
+		this.updateApiNumberOfPetitions(apiResponse, pages);
 		
 		logger.info("<--" + methodName);
 		
@@ -263,7 +263,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		return apiResponse;
 	}
 	
-	private void updateApiPetitions(Api apiResponse, int petitions) throws StockNewsApiException {
+	private void updateApiNumberOfPetitions(Api apiResponse, int petitions) throws StockNewsApiException {
 		
 		String methodName = "updateApiPetitions";
 		logger.info("-->" + methodName);
@@ -363,16 +363,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 	    	int negative = emotionRates.get("Negative").asInt();
 	    	double sentimentScore = emotionRates.get("sentiment_score").asDouble();
 	    	
-	    	String labelScore = "";
-	    	if (positive > negative) {
-	    		labelScore = "POSITIVE";
-	    	} else if (negative > positive) {
-	    		labelScore = "NEGATIVE";
-	    	} else {
-	    		labelScore = "NEUTRAL";
-	    	}
-	    	
-	    	DailyEmotion emotionRate = new DailyEmotion(publishedAt, neutral, positive, negative, labelScore,
+	    	DailyEmotion emotionRate = new DailyEmotion(publishedAt, neutral, positive, negative, "",
 	    			sentimentScore);
 	    	dailyEmotionsList.add(emotionRate);
 	    }
@@ -399,30 +390,54 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		for (DailyEmotion dailyEmotion: dailyEmotions) {
 			
 			NewsEmotion importedEmotion = emotionRepo.findbyAssetAndDate(ticker, dailyEmotion.getPublishedAt());
+			if (importedEmotion != null) {
+				
+				String emotionLabel = calculateNewsEmotionScore(dailyEmotion.getPositive(), dailyEmotion.getNegative());
+				importedEmotion.setEmotionLabel(emotionLabel);
+			} else {
 			
-			if (importedEmotion != null)
-				continue;
-			
-			NewsEmotion emotion = new NewsEmotion();
-			emotion.setAsset(asset);
-			emotion.setPositive(dailyEmotion.getPositive());
-			emotion.setNeutral(dailyEmotion.getNeutral());
-			emotion.setNegative(dailyEmotion.getNegative());
-			emotion.setEmotionLabel(dailyEmotion.getScoreLabel());
-			emotion.setEmotionScore(dailyEmotion.getTotalScore());
-			emotion.setPublishedAt(dailyEmotion.getPublishedAt());
-			emotion.setApiName(apiName);
+				importedEmotion = setNewsEmotionFromDailyEmotion(new NewsEmotion(), dailyEmotion, asset, ticker);
+			}
 			
 			try {
-				emotionRepo.save(emotion);
+				emotionRepo.save(importedEmotion);
 			}catch(Exception e) {
 				logger.error("Error trying to save daily emotion");
 			}
-			logger.trace("Emotion " + emotion + " successfully imported");
+			logger.trace("Emotion " + importedEmotion + " successfully imported");
 			
 		}
 		
 		logger.info("<--" + methodName);
 	}
+	
+	private NewsEmotion setNewsEmotionFromDailyEmotion(NewsEmotion emotion, DailyEmotion dailyEmotion, 
+			Asset asset, String apiName) {
+		
+		emotion.setAsset(asset);
+		emotion.setPositive(dailyEmotion.getPositive());
+		emotion.setNeutral(dailyEmotion.getNeutral());
+		emotion.setNegative(dailyEmotion.getNegative());
+		emotion.setEmotionScore(dailyEmotion.getTotalScore());
+		emotion.setPublishedAt(dailyEmotion.getPublishedAt());
+		emotion.setApiName(apiName);
+		
+		String emotionLabel = calculateNewsEmotionScore(dailyEmotion.getPositive(), dailyEmotion.getNegative());
+		emotion.setEmotionLabel(emotionLabel);
+		
+		return emotion;
+	}
 
+	private String calculateNewsEmotionScore(int positive, int negative) {
+		
+		String labelScore = "";
+		if (positive > negative) {
+			labelScore = "POSITIVE";
+		} else if (negative > positive) {
+			labelScore = "NEGATIVE";
+		} else {
+			labelScore = "NEUTRAL";
+		}	
+		return labelScore;
+	}
 }
