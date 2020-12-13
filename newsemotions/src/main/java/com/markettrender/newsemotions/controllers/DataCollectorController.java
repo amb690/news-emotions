@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
+import com.markettrender.newsemotions.exceptions.StockNewsApiException;
 import com.markettrender.newsemotions.models.responses.ImportAllTickersResponse;
 import com.markettrender.newsemotions.models.responses.ImportDailyEmotionsResponse;
 import com.markettrender.newsemotions.service.AssetService;
@@ -40,7 +40,7 @@ public class DataCollectorController {
 		ImportDailyEmotionsResponse response = new ImportDailyEmotionsResponse();
 		try {
 			response = stockNewsDataCollectorService.importDailyEmotionsByDate(ticker, from.getTime(), Calendar.getInstance().getTime());
-		} catch (ResponseStatusException re) {
+		} catch (StockNewsApiException re) {
 			return new ResponseEntity<>(re.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 

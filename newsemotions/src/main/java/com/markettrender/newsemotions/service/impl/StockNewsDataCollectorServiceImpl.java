@@ -201,7 +201,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 	}
 
 	@Override
-	public ImportDailyEmotionsResponse importDailyEmotionsByDate(String ticker, Date from, Date to) throws Exception {
+	public ImportDailyEmotionsResponse importDailyEmotionsByDate(String ticker, Date from, Date to) throws StockNewsApiException {
 
 		String methodName = "importDailyEmotions";
 		logger.info("-->" + methodName);
@@ -253,7 +253,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 			assetRepo.save(asset);
 		} catch(Exception e) {
 			logger.error("Database error creating/updating asset " + ticker);
-			throw new Exception("Database error", e);
+			throw new StockNewsApiException("Database error", e);
 		}
 		
 		logger.info("<--" + methodName);
