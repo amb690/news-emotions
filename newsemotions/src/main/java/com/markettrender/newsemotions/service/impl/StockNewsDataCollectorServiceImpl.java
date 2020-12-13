@@ -84,8 +84,8 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 			try {
 				asset = assetRepo.findbyName(ticker.getTicker());
 			} catch(Exception e) {
-				logger.error("Database error trying to to find ticker " + ticker.getTicker());
-				throw new Exception("Database error", e);
+				logger.error("Database error trying to find ticker " + ticker.getTicker());
+				throw new Exception("Database error trying to get ticker", e);
 			}
 			
 			if (asset == null) {
@@ -102,7 +102,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 				assetRepo.save(asset);
 			} catch(Exception e) {
 				logger.error("Database error creating/updating ticker " + ticker.getTicker());
-				throw new Exception("Database error", e);
+				throw new Exception("Database error creating/updating ticker", e);
 			}
 		}
 		ImportAllTickersResponse response = new ImportAllTickersResponse(created, updated);
