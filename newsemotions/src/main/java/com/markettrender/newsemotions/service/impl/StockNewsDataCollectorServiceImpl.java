@@ -248,6 +248,14 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 
 		this.updateApiNumberOfPetitions(apiResponse, pages);
 		
+		asset.setHasImportedEmotions(true);
+		try {
+			assetRepo.save(asset);
+		} catch(Exception e) {
+			logger.error("Database error creating/updating asset " + ticker);
+			throw new Exception("Database error", e);
+		}
+		
 		logger.info("<--" + methodName);
 		
 		return response;
