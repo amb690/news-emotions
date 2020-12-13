@@ -7,7 +7,7 @@ import com.markettrender.newsemotions.models.responses.ImportDailyEmotionsRespon
 
 public interface StockNewsDataCollectorService {
 
-	public ImportDailyEmotionsResponse importDailyEmotionsByDate(String ticker, Date from, Date to, boolean lastYear, boolean lastThirtyDays) 
+	public ImportDailyEmotionsResponse importDailyEmotionsByDate(String ticker, Date from, Date to) 
 			throws Exception;
 
 	public ImportAllTickersResponse importAllTickers() throws Exception;

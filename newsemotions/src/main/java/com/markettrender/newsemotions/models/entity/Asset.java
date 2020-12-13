@@ -64,6 +64,10 @@ public class Asset implements Serializable {
 	@JsonManagedReference
 	private List<NewsEmotion> emotions;
 
+	private boolean hasImportedEmotions;
+	
+	private boolean hasImportedCandles;
+	
 	@PrePersist
 	public void prePersist() {
 		this.createdAt = new Date();
@@ -163,6 +167,22 @@ public class Asset implements Serializable {
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
+	}
+	
+	public boolean isHasImportedEmotions() {
+		return hasImportedEmotions;
+	}
+
+	public void setHasImportedEmotions(boolean hasImportedEmotions) {
+		this.hasImportedEmotions = hasImportedEmotions;
+	}
+
+	public boolean isHasImportedCandles() {
+		return hasImportedCandles;
+	}
+
+	public void setHasImportedCandles(boolean hasImportedCandles) {
+		this.hasImportedCandles = hasImportedCandles;
 	}
 
 	@Override

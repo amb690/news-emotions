@@ -201,10 +201,23 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 	}
 
 	@Override
-	public ImportDailyEmotionsResponse importDailyEmotionsByDate(String ticker, Date from, Date to, boolean lastYear, boolean lastThirtyDays) throws Exception {
+	public ImportDailyEmotionsResponse importDailyEmotionsByDate(String ticker, Date from, Date to) throws Exception {
 
 		String methodName = "importDailyEmotions";
 		logger.info("-->" + methodName);
+		
+		// Checks if asset exists in the database
+		Asset asset = assetRepo.findbyName(ticker);
+		if (asset == null) {
+			logger.error("Asset not found!");
+			throw new StockNewsApiException("The asset was not found");
+		}
+		logger.debug("Asset info: " + asset);
+		
+		if (asset.isHasImportedEmotions()) {
+			logger.error("Emotions of this asset has already been imported!");
+			throw new StockNewsApiException("Emotions of this asset has already been imported!");
+		}
 		
 		// se obtienen los datos de la api
 		Api apiResponse = this.getApiData();
@@ -217,7 +230,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 			throw new StockNewsApiException("Stock news api quota exceeded");
 		}
 		
-		DailyEmotions dailyEmotions = getDailyEmotionsResponse(from, to, ticker, 1, lastYear, lastThirtyDays);
+		DailyEmotions dailyEmotions = getDailyEmotionsResponse(from, to, ticker, 1);
 		List<DailyEmotion> dailyEmotionsList = dailyEmotions.getEmotionRates();
 		
 		int pages = dailyEmotions.getPages();
@@ -225,13 +238,13 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 			throw new StockNewsApiException("Stock news api quota exceeded");
 		
 		for (int i=2; i<=pages; i++) {
-			DailyEmotions otherDailyEmotions = getDailyEmotionsResponse(from, to, ticker, i, lastYear, lastThirtyDays);
+			DailyEmotions otherDailyEmotions = getDailyEmotionsResponse(from, to, ticker, i);
 			List<DailyEmotion> otherDailyEmotionsList = otherDailyEmotions.getEmotionRates();
 			dailyEmotionsList.addAll(otherDailyEmotionsList);
 		}
 		dailyEmotions.setEmotionRates(dailyEmotionsList);
 		
-		ImportDailyEmotionsResponse response = this.saveDailyEmotions(ticker, dailyEmotionsList, apiResponse.getName());
+		ImportDailyEmotionsResponse response = this.saveDailyEmotions(ticker, dailyEmotionsList, apiResponse.getName(), asset);
 
 		this.updateApiNumberOfPetitions(apiResponse, pages);
 		
@@ -289,7 +302,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		logger.info("<--" + methodName);
 	}
 
-	private DailyEmotions getDailyEmotionsResponse(Date from, Date to, String ticker, int pageNumber, boolean lastYear, boolean lastThirtyDays) throws StockNewsApiException {
+	private DailyEmotions getDailyEmotionsResponse(Date from, Date to, String ticker, int pageNumber) throws StockNewsApiException {
 		
 		String methodName = "getDailyEmotionsResponse";
 		logger.info("-->" + methodName);
@@ -301,15 +314,6 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		String formatedToDate = format.format(to);
 		
 		String date = formatedFromDate.concat("-").concat(formatedToDate);
-
-		if (lastThirtyDays) {
-			logger.info("Retrieving last 30 days emotions");
-			date = "last30days";
-		}
-		if (lastYear) {
-			logger.info("Retrieving last year emotions");
-			date = "yeartodate";
-		}
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -375,17 +379,10 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
     	return dailyEmotions;
 	}
 	
-	private ImportDailyEmotionsResponse saveDailyEmotions(String ticker, List<DailyEmotion> dailyEmotions, String apiName) {
+	private ImportDailyEmotionsResponse saveDailyEmotions(String ticker, List<DailyEmotion> dailyEmotions, String apiName, Asset asset) {
 		
 		String methodName = "saveDailyEmotions";
 		logger.info("-->" + methodName);
-		
-		Asset asset = assetRepo.findbyName(ticker);
-		if (asset == null) {
-			logger.error("Asset not found!");
-			return new ImportDailyEmotionsResponse();
-		}
-		logger.debug("Asset info: " + asset);
 		
 		int created = 0;
 		int updated = 0;
