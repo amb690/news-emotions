@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.markettrender.newsemotions.models.entity.Asset;
 import com.markettrender.newsemotions.models.responses.ImportAllTickersResponse;
 import com.markettrender.newsemotions.models.responses.ImportDailyEmotionsResponse;
 import com.markettrender.newsemotions.service.AssetService;
@@ -42,10 +41,8 @@ public class DataCollectorController {
 		try {
 			response = stockNewsDataCollectorService.importDailyEmotionsByDate(ticker, from.getTime(), Calendar.getInstance().getTime());
 		} catch (ResponseStatusException re) {
-			return new ResponseEntity<>("Bad connection", HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(re.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		Asset asset = assetService.findByTicker1(ticker);
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
