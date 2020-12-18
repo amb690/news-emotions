@@ -214,11 +214,6 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		}
 		logger.debug("Asset info: " + asset);
 		
-		if (asset.isHasImportedEmotions()) {
-			logger.error("Emotions of this asset has already been imported!");
-			throw new StockNewsApiException("Emotions of this asset has already been imported!");
-		}
-		
 		// se obtienen los datos de la api
 		Api apiResponse = this.getApiData();
 		
