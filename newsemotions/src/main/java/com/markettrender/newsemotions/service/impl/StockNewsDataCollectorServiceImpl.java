@@ -17,9 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -30,7 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.markettrender.newsemotions.exceptions.StockNewsApiException;
 import com.markettrender.newsemotions.models.entity.Asset;
 import com.markettrender.newsemotions.models.entity.NewsEmotion;
-import com.markettrender.newsemotions.models.pojo.Api;
 import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotion;
 import com.markettrender.newsemotions.models.pojo.stocknews.DailyEmotions;
 import com.markettrender.newsemotions.models.pojo.stocknews.Ticker;
@@ -59,9 +56,6 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 	
 	@Autowired
 	private NewsEmotionsRepository emotionRepo;
-	
-	@Value("${api-manager-url}")
-	private String apiManagerUrl;
 	
 	@Value("${stock-news-key}")
 	private String stockNewsApiKey;
@@ -214,23 +208,10 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		}
 		logger.debug("Asset info: " + asset);
 		
-		// se obtienen los datos de la api
-		Api apiResponse = this.getApiData();
-		
-		// se comprueba que no se ha excedido la cuota máxima de la api
-		long numPetitions = apiResponse.getNumberOfPetitions();
-		long maxPetitions = apiResponse.getMaxPetitions();
-		if (numPetitions >= maxPetitions) {
-			logger.error("Stock news api quota exceeded");
-			throw new StockNewsApiException("Stock news api quota exceeded");
-		}
-		
 		DailyEmotions dailyEmotions = getDailyEmotionsResponse(from, to, ticker, 1);
 		List<DailyEmotion> dailyEmotionsList = dailyEmotions.getEmotionRates();
 		
 		int pages = dailyEmotions.getPages();
-		if (numPetitions + pages >= maxPetitions)
-			throw new StockNewsApiException("Stock news api quota exceeded");
 		
 		for (int i=2; i<=pages; i++) {
 			DailyEmotions otherDailyEmotions = getDailyEmotionsResponse(from, to, ticker, i);
@@ -239,9 +220,7 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		}
 		dailyEmotions.setEmotionRates(dailyEmotionsList);
 		
-		ImportDailyEmotionsResponse response = this.saveDailyEmotions(ticker, dailyEmotionsList, apiResponse.getName(), asset);
-
-		this.updateApiNumberOfPetitions(apiResponse, pages);
+		ImportDailyEmotionsResponse response = this.saveDailyEmotions(ticker, dailyEmotionsList, API_NAME, asset);
 		
 		asset.setHasImportedEmotions(true);
 		try {
@@ -254,55 +233,6 @@ public class StockNewsDataCollectorServiceImpl implements StockNewsDataCollector
 		logger.info("<--" + methodName);
 		
 		return response;
-	}
-	
-	private Api getApiData() throws StockNewsApiException {
-		
-		String methodName = "getApiData";
-		logger.info("-->" + methodName);
-		
-		RestTemplate restTemplate = new RestTemplate();
-
-		ResponseEntity<Api> apiManagerResponse = new ResponseEntity<>(HttpStatus.OK);
-		
-		Api apiResponse = new Api();
-		try {
-			apiManagerResponse = restTemplate.getForEntity(apiManagerUrl + API_NAME, Api.class);
-			apiResponse = apiManagerResponse.getBody();
-
-		} catch (Exception e) {
-			logger.error("Api manager connection error");
-			throw new StockNewsApiException("Api manager connection error");
-		}
-		
-		logger.info("Api response: " + apiResponse);
-		logger.info("<--" + methodName);
-		return apiResponse;
-	}
-	
-	private void updateApiNumberOfPetitions(Api apiResponse, int petitions) throws StockNewsApiException {
-		
-		String methodName = "updateApiPetitions";
-		logger.info("-->" + methodName);
-		RestTemplate restTemplate = new RestTemplate();
-		
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
-		
-		// actualiza peticiones en api manager
-		UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiManagerUrl + "petitions/" + apiResponse.getId())
-				.queryParam("numberOfPetitions", (apiResponse.getNumberOfPetitions() + petitions));
-
-		try {
-		HttpEntity<?> entity = new HttpEntity<>(headers);
-		restTemplate.exchange(builder.toUriString(), HttpMethod.PUT, entity,
-				String.class);
-		} catch(Exception e) {
-			logger.error("Api manager connection error");
-			throw new StockNewsApiException("Api manager connection error", e);
-		}
-		logger.info("Api " + apiResponse.getName() + " successfully updated with " + (apiResponse.getNumberOfPetitions() + petitions) + " petitions");
-		logger.info("<--" + methodName);
 	}
 
 	private DailyEmotions getDailyEmotionsResponse(Date from, Date to, String ticker, int pageNumber) throws StockNewsApiException {
