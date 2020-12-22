@@ -29,7 +29,7 @@ public class AssetControllerTest {
 		
 		Mockito.when(assetService.findByTicker1(Mockito.anyString())).thenReturn(new Asset());
 		
-		this.mockMvc.perform(get("/newsemotions/asset/{ticker}", "GOLD", new Date()))
+		this.mockMvc.perform(get("/asset/{ticker}", "GOLD", new Date()))
 			.andExpect(status().isOk());
 	}
 }

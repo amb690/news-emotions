@@ -15,7 +15,7 @@ import com.markettrender.newsemotions.models.entity.Asset;
 import com.markettrender.newsemotions.service.AssetService;
 
 @RestController
-@RequestMapping("/newsemotions/asset")
+@RequestMapping("/asset")
 public class AssetController {
 
 	@Autowired
