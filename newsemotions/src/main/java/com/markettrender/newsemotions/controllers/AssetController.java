@@ -15,17 +15,17 @@ import com.markettrender.newsemotions.models.entity.Asset;
 import com.markettrender.newsemotions.service.AssetService;
 
 @RestController
-@RequestMapping("/emotions/asset")
+@RequestMapping("/asset")
 public class AssetController {
 
 	@Autowired
 	public AssetService assetService;
 	
-	@GetMapping("/{asset}")
+	@GetMapping("/{ticker}")
 	@ResponseStatus(HttpStatus.OK)
-	public ResponseEntity<?> getAssetFromTicker(@PathVariable @NotBlank String asset) throws Exception {
+	public ResponseEntity<?> getAssetFromTicker(@PathVariable @NotBlank String ticker) throws Exception {
 
-		Asset response = assetService.findByTicker1(asset);
+		Asset response = assetService.findByTicker1(ticker);
 		
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
