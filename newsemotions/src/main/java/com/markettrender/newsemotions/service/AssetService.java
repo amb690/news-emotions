@@ -11,4 +11,6 @@ public interface AssetService {
 	public void save(Asset asset);
 
 	List<Asset> findAll();
+
+	void delete(Long id);
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.markettrender.newsemotions.models.entity.Asset;
-import com.markettrender.newsemotions.repositories.AssetPageableRepository;
 import com.markettrender.newsemotions.repositories.AssetRepository;
 import com.markettrender.newsemotions.service.AssetService;
 
@@ -16,9 +15,6 @@ public class AssetServiceImpl implements AssetService {
 
 	@Autowired
 	private AssetRepository assetRepo;
-	
-	@Autowired
-	private AssetPageableRepository assetPageRepo;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -38,6 +34,11 @@ public class AssetServiceImpl implements AssetService {
 	public List<Asset> findAll() {
 
 		return assetRepo.findAll();
+	}
+	
+	@Override
+	public void delete(Long id) {
+		assetRepo.deleteById(id);
 	}
 
 }
